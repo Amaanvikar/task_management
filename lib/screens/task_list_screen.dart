@@ -4,53 +4,220 @@ import 'add_task_screen.dart';
 import 'task_details_screen.dart';
 import '../provider/task_provider.dart';
 import '../models/task_model.dart';
-import 'dart:io';
 
 class TaskListScreen extends ConsumerWidget {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = "";
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final taskList = ref.watch(taskProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: Text('Task List')),
-      body: taskList.isEmpty
-          ? Center(child: Text("No tasks added yet!"))
-          : ListView.builder(
-              itemCount: taskList.length,
-              itemBuilder: (context, index) {
-                final task = taskList[index];
+    final filteredTasks = taskList
+        .where((task) =>
+            task.title.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
 
-                return Card(
-                  elevation: 3,
-                  margin: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                  child: ListTile(
-                    leading: task.imagePath != null
-                        ? ClipRRect(
-                            borderRadius: BorderRadius.circular(8),
-                            child: Image.file(File(task.imagePath!),
-                                width: 50, height: 50, fit: BoxFit.cover),
-                          )
-                        : Icon(Icons.task, size: 40, color: Colors.blue),
-                    title: Text(task.title,
-                        style: TextStyle(fontWeight: FontWeight.bold)),
-                    subtitle: Text("Priority: ${task.priority}"),
-                    trailing: Icon(Icons.arrow_forward_ios, size: 16),
-                    onTap: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => TaskDetailsScreen(task: task)),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(
+          'Task List',
+          style: TextStyle(
+              fontFamily: 'Poppins',
+              fontWeight: FontWeight.bold,
+              color: Colors.white),
+        ),
+        backgroundColor: Colors.blueAccent,
+        elevation: 4,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.search),
+            onPressed: () {
+              showSearch(
+                context: context,
+                delegate: TaskSearchDelegate(filteredTasks),
+              );
+            },
+          ),
+        ],
+      ),
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+        child: filteredTasks.isEmpty
+            ? const Center(child: Text("No tasks found"))
+            : ListView.builder(
+                itemCount: filteredTasks.length,
+                itemBuilder: (context, index) {
+                  final task = filteredTasks[index];
+
+                  return Card(
+                    elevation: 3,
+                    margin: const EdgeInsets.symmetric(vertical: 8.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  ),
-                );
-              },
-            ),
+                    child: ListTile(
+                      contentPadding: const EdgeInsets.all(16.0),
+                      title: Text(
+                        task.title,
+                        style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16),
+                      ),
+                      subtitle: Text(
+                        "Priority: ${task.priority}",
+                        style: const TextStyle(
+                            fontFamily: 'Poppins',
+                            fontSize: 14,
+                            color: Colors.grey),
+                      ),
+                      trailing: const Icon(
+                        Icons.arrow_forward_ios,
+                        size: 16,
+                        color: Colors.blueAccent,
+                      ),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TaskDetailsScreen(task: task),
+                        ),
+                      ),
+                    ),
+                  );
+                },
+              ),
+      ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
+        backgroundColor: Colors.amberAccent,
+        child: const Icon(Icons.add),
         onPressed: () => Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => TaskFormScreen()),
         ),
       ),
+    );
+  }
+}
+
+class TaskSearchDelegate extends SearchDelegate {
+  final List<Task> tasks;
+
+  TaskSearchDelegate(this.tasks);
+
+  @override
+  List<Widget> buildActions(BuildContext context) {
+    return [
+      IconButton(
+        icon: const Icon(Icons.clear),
+        onPressed: () {
+          query = '';
+        },
+      ),
+    ];
+  }
+
+  @override
+  Widget buildLeading(BuildContext context) {
+    return IconButton(
+      icon: const Icon(Icons.arrow_back),
+      onPressed: () {
+        close(context, null);
+      },
+    );
+  }
+
+  @override
+  Widget buildResults(BuildContext context) {
+    final results = tasks
+        .where((task) => task.title.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    return ListView.builder(
+      itemCount: results.length,
+      itemBuilder: (context, index) {
+        final task = results[index];
+        return Card(
+          elevation: 3,
+          margin: const EdgeInsets.symmetric(vertical: 8.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(16.0),
+            title: Text(
+              task.title,
+              style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
+            ),
+            subtitle: Text(
+              "Priority: ${task.priority}",
+              style: const TextStyle(
+                  fontFamily: 'Poppins', fontSize: 14, color: Colors.grey),
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.blueAccent,
+            ),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TaskDetailsScreen(task: task),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  @override
+  Widget buildSuggestions(BuildContext context) {
+    final suggestions = tasks
+        .where((task) => task.title.toLowerCase().contains(query.toLowerCase()))
+        .toList();
+
+    return ListView.builder(
+      itemCount: suggestions.length,
+      itemBuilder: (context, index) {
+        final task = suggestions[index];
+        return Card(
+          elevation: 3,
+          margin: const EdgeInsets.symmetric(vertical: 8.0),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: ListTile(
+            contentPadding: const EdgeInsets.all(16.0),
+            title: Text(
+              task.title,
+              style: const TextStyle(
+                  fontFamily: 'Poppins',
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16),
+            ),
+            subtitle: Text(
+              "Priority: ${task.priority}",
+              style: const TextStyle(
+                  fontFamily: 'Poppins', fontSize: 14, color: Colors.grey),
+            ),
+            trailing: const Icon(
+              Icons.arrow_forward_ios,
+              size: 16,
+              color: Colors.blueAccent,
+            ),
+            onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => TaskDetailsScreen(task: task),
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 }

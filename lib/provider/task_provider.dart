@@ -26,4 +26,22 @@ class TaskNotifier extends StateNotifier<List<Task>> {
     await dbHelper.deleteTask(id);
     loadTasks();
   }
+
+  void updateTask(Task updatedTask) {
+    state = state
+        .map((task) => task.id == updatedTask.id ? updatedTask : task)
+        .toList();
+  }
+}
+
+final statusProvider = StateNotifierProvider<StatusNotifier, String>((ref) {
+  return StatusNotifier();
+});
+
+class StatusNotifier extends StateNotifier<String> {
+  StatusNotifier() : super("All");
+
+  void setStatus(String status) {
+    state = status;
+  }
 }

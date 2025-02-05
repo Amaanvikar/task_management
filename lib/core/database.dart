@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 import '../models/task_model.dart';
@@ -16,11 +17,28 @@ class DatabaseHelper {
     String path = join(await getDatabasesPath(), 'tasks.db');
     return openDatabase(
       path,
-      version: 1,
+      version: 2, // Increment the version to trigger onUpgrade method
       onCreate: (db, version) {
         return db.execute(
-          "CREATE TABLE $tableName (id INTEGER PRIMARY KEY, title TEXT, description TEXT, dueDate TEXT, priority TEXT, imagePath TEXT, latitude REAL, longitude REAL, isCompleted INTEGER)",
+          "CREATE TABLE $tableName ("
+          "id INTEGER PRIMARY KEY, "
+          "title TEXT, "
+          "description TEXT, "
+          "dueDate TEXT, "
+          "priority TEXT, "
+          "imagePaths TEXT, "
+          "latitude REAL, "
+          "longitude REAL, "
+          "isCompleted INTEGER"
+          ")",
         );
+      },
+      onUpgrade: (db, oldVersion, newVersion) async {
+        if (oldVersion < 2) {
+          await db.execute(
+            "ALTER TABLE $tableName ADD COLUMN imagePaths TEXT",
+          );
+        }
       },
     );
   }
