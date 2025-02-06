@@ -10,42 +10,19 @@ class Task {
   final double? latitude;
   final double? longitude;
   final bool isCompleted;
+  final String status;
 
-  Task({
-    this.id,
-    required this.title,
-    required this.description,
-    required this.dueDate,
-    required this.priority,
-    this.imagePaths,
-    this.latitude,
-    this.longitude,
-    this.isCompleted = false,
-  });
-
-  Task copyWith({
-    int? id,
-    String? title,
-    String? description,
-    String? dueDate,
-    String? priority,
-    List<String>? imagePaths,
-    double? latitude,
-    double? longitude,
-    bool? isCompleted,
-  }) {
-    return Task(
-      id: id ?? this.id,
-      title: title ?? this.title,
-      description: description ?? this.description,
-      dueDate: dueDate ?? this.dueDate,
-      priority: priority ?? this.priority,
-      imagePaths: imagePaths ?? this.imagePaths,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
-      isCompleted: isCompleted ?? this.isCompleted,
-    );
-  }
+  Task(
+      {this.id,
+      required this.title,
+      required this.description,
+      required this.dueDate,
+      required this.priority,
+      required this.status,
+      this.imagePaths,
+      this.latitude,
+      this.longitude,
+      this.isCompleted = false});
 
   Map<String, dynamic> toMap() {
     return {
@@ -57,7 +34,7 @@ class Task {
       'imagePaths': json.encode(imagePaths),
       'latitude': latitude,
       'longitude': longitude,
-      'isCompleted': isCompleted ? 1 : 0,
+      'status': status,
     };
   }
 
@@ -73,7 +50,7 @@ class Task {
           : [],
       latitude: map['latitude'],
       longitude: map['longitude'],
-      isCompleted: map['isCompleted'] == 1,
+      status: map['status'],
     );
   }
 }

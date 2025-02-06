@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import Google Fonts
 
 enum ButtonType { primary, secondary }
 
@@ -19,14 +19,9 @@ class CommonButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Set colors based on button type
-    Color backgroundColor;
-    if (buttonType == ButtonType.primary) {
-      backgroundColor = Color(0xFF01442C);
-    } else {
-      backgroundColor = Colors.grey;
-    }
-
+    Color backgroundColor = buttonType == ButtonType.primary
+        ? const Color(0xFF01442C)
+        : Colors.grey;
     return ElevatedButton(
       onPressed: isLoading ? null : onPressed,
       style: ElevatedButton.styleFrom(
@@ -34,13 +29,19 @@ class CommonButton extends StatelessWidget {
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
         ),
-        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 20),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
       ),
       child: isLoading
-          ? SizedBox(width: 24, height: 24, child: CircularProgressIndicator())
+          ? const SizedBox(
+              width: 24,
+              height: 24,
+              child: CircularProgressIndicator(color: Colors.white),
+            )
           : Text(
               label,
-              style: GoogleFonts.montserrat(
+              style: GoogleFonts.inter(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
                 color: Colors.white,
               ),
             ),
