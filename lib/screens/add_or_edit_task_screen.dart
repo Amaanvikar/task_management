@@ -68,7 +68,7 @@ class _TaskFormScreenState extends ConsumerState<TaskFormScreen> {
 
   Future<void> _pickImages() async {
     final picker = ImagePicker();
-    final pickedFiles = await picker.pickMultiImage();
+    final pickedFiles = await picker.pickMultiImage(limit: 5);
     if (pickedFiles != null &&
         _selectedImages.length + pickedFiles.length <= 5) {
       setState(() {

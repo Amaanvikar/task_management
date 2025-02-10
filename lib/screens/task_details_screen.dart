@@ -64,7 +64,6 @@ class TaskDetailsScreen extends ConsumerWidget {
                     fontSize: 20, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 8),
-
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -78,7 +77,6 @@ class TaskDetailsScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 15),
-
               Row(
                 children: [
                   const Icon(Icons.calendar_today, color: Colors.grey),
@@ -91,7 +89,6 @@ class TaskDetailsScreen extends ConsumerWidget {
                 ],
               ),
               const SizedBox(height: 15),
-
               Row(
                 children: [
                   const Icon(Icons.priority_high, color: Colors.grey),
@@ -123,9 +120,7 @@ class TaskDetailsScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-
               const SizedBox(height: 15),
-
               Row(
                 children: [
                   const Icon(Icons.check_circle, color: Colors.grey),
@@ -157,10 +152,7 @@ class TaskDetailsScreen extends ConsumerWidget {
                   ),
                 ],
               ),
-
               const SizedBox(height: 20),
-
-              // Display multiple images horizontally
               if (task.imagePaths != null && task.imagePaths!.isNotEmpty) ...[
                 Text("Attachments",
                     style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
@@ -192,10 +184,7 @@ class TaskDetailsScreen extends ConsumerWidget {
                     Text('No images available', style: GoogleFonts.inter()),
                   ],
                 ),
-
               const SizedBox(height: 20),
-
-              // Display Google Map location if available
               if (taskLocation != null) ...[
                 Text("Task Location",
                     style: GoogleFonts.inter(fontWeight: FontWeight.bold)),
