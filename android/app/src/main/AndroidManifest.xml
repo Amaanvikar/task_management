@@ -7,7 +7,7 @@
     <application
         android:label="task_management"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/launcher_icon">
 
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBkSB452v9R41MwXsw7S6CcSe7t5OPyuMQ"/>
         
